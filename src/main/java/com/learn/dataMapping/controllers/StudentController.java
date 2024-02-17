@@ -34,17 +34,29 @@ public class StudentController {
   public ResponseEntity<?> getAllStudents(
       @RequestParam(required = false, defaultValue = "0") int page,
       @RequestParam(required = false, defaultValue = "10") int size,
-      @RequestParam(required = false, defaultValue = "studentId") String sortBy) {
+      @RequestParam(required = false, defaultValue = "studentId") String sortBy,
+      @RequestParam(required = false, defaultValue = "true") boolean paginate) {
     try {
-      Pageable paging = PageRequest.of(page, size, Sort.by(sortBy));
-      Page<Student> pageStudents = studentRepository.findAll(paging);
-      List<Student> students = pageStudents.getContent();
 
-      if (students.isEmpty()) {
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+      if (paginate) {
+        Pageable paging = PageRequest.of(page, size, Sort.by(sortBy));
+        Page<Student> pageStudents = studentRepository.findAll(paging);
+        List<Student> students = pageStudents.getContent();
+
+        if (students.isEmpty()) {
+          return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+
+        return new ResponseEntity<>(students, HttpStatus.OK);
+      } else {
+        List<Student> students = studentRepository.findAll();
+
+        if (students.isEmpty()) {
+          return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+
+        return new ResponseEntity<>(students, HttpStatus.OK);
       }
-
-      return new ResponseEntity<>(students, HttpStatus.OK);
     } catch (Exception e) {
       return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
     }
