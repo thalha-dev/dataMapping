@@ -5,7 +5,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.learn.dataMapping.DTO.CourseDTO;
@@ -53,7 +55,7 @@ public class CourseController {
       CourseDTO courseDTO = modelMapper.map(savedCourse, CourseDTO.class);
       return new ResponseEntity<CourseDTO>(courseDTO, HttpStatus.CREATED);
     } catch (Exception e) {
-      e.printStackTrace(); 
+      e.printStackTrace();
       return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
@@ -99,6 +101,20 @@ public class CourseController {
     } catch (Exception e) {
       e.printStackTrace();
       throw new RuntimeException("Error", e);
+    }
+  }
+
+  @PutMapping("/course/updateCourseCredit")
+  public ResponseEntity<CourseDTO> updateCourseCredit(@RequestParam int credit, @RequestParam int courseId) {
+    try {
+
+      courseRepository.updateCourseCreditByCourseId(credit, courseId);
+      Course savedCourse = courseRepository.findById(courseId);
+      CourseDTO courseDTO = modelMapper.map(savedCourse, CourseDTO.class);
+      return new ResponseEntity<CourseDTO>(courseDTO, HttpStatus.CREATED);
+    } catch (Exception e) {
+      e.printStackTrace();
+      return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
