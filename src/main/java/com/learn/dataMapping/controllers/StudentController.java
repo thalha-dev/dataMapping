@@ -26,7 +26,14 @@ public class StudentController {
 
   @PostMapping("/student/enroll")
   public ResponseEntity<Student> studentEnroll(@RequestBody Student newStudent) {
-    Student savedStudent = studentRepository.save(newStudent);
+    // Student savedStudent = studentRepository.save(newStudent);
+    Student savedStudent = studentRepository.save(
+        Student.builder()
+            .firstName(newStudent.getFirstName())
+            .lastName(newStudent.getLastName())
+            .emailId(newStudent.getEmailId())
+            .guardian(newStudent.getGuardian())
+            .build());
     return new ResponseEntity<>(savedStudent, HttpStatus.CREATED);
   }
 
